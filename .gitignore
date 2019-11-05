@@ -1,0 +1,8 @@
+PipeLine.Domain/bin
+PipeLine.Domain/obj
+PipeLine.Interfaces/bin
+PipeLine.Interfaces/obj
+PipeLine.Models/bin
+PipeLine.Models/obj
+WebApiWithPipeLine/bin
+WebApiWithPipeLine/obj
