@@ -1,6 +1,6 @@
 ﻿namespace PipeLine.Interfaces
 {
-    public interface IStepsExecutor<TIn>
+    public interface IAddInfoToFileExecutor<TIn>
     {
         void Execute(TIn inModel);
     }

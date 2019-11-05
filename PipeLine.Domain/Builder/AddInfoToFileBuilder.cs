@@ -1,6 +1,8 @@
-﻿using PipeLine.Domain.Abstract;
+﻿using Microsoft.Extensions.Options;
+using PipeLine.Domain.Abstract;
 using PipeLine.Domain.Adapters.AddInfoToFile;
 using PipeLine.Domain.Models.AddInfoToFile;
+using PipeLine.Domain.Options;
 using PipeLine.Domain.Steps.AddInfoToFile;
 using PipeLine.Interfaces;
 using PipeLine.Models.AddInfoToFileModels;
@@ -10,20 +12,20 @@ namespace PipeLine.Domain.Builder
 {
     public class AddInfoToFileBuilder: IAddInfoToFileBuilder
     {
-        private readonly string _filePath;
-        public AddInfoToFileBuilder()
+        private readonly AddInfoToFileOptions _options;
+        public AddInfoToFileBuilder(IOptions<AddInfoToFileOptions> options)
         {
-            _filePath = "Information.txt";
+            _options = options.Value;
         }
 
         //TODO вынести в DI
         public IPipeLine<AddInfoToFileInModel, ThirdStepResult> Build()
         {
-            var firstStep = new FirstStep(_filePath);
+            var firstStep = new FirstStep(_options);
             var adapter = new FirstStepAdapter();
-            var secondStep = new SecondStep(_filePath);
+            var secondStep = new SecondStep(_options);
             var adapter2 = new SecondStepAdapter();
-            var thirdStep = new ThirdStep(_filePath);
+            var thirdStep = new ThirdStep(_options);
 
             var pipeline = new StandardPipeLine<AddInfoToFileInModel, ThirdStepResult>()
                     .AddStep<AddInfoToFileInModel, FirstStepResult>(model => firstStep.Execute(model))

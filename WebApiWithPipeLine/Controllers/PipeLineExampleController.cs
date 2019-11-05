@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using PipeLine.Domain;
+using PipeLine.Interfaces;
 using PipeLine.Models.AddInfoToFileModels;
 using PipeLine.WebApiModels;
+
 
 namespace WebApiWithPipeLine.Controllers
 {
@@ -11,8 +12,10 @@ namespace WebApiWithPipeLine.Controllers
     public class PipeLineExampleController : ControllerBase
     {
         private readonly ILogger<PipeLineExampleController> _logger;
-        public PipeLineExampleController(ILogger<PipeLineExampleController> logger)
+        private readonly IAddInfoToFileExecutor<AddInfoToFileInModel> _addInfoToFileExecutor;
+        public PipeLineExampleController(ILogger<PipeLineExampleController> logger, IAddInfoToFileExecutor<AddInfoToFileInModel> addInfoToFileExecutor)
         {
+            _addInfoToFileExecutor = addInfoToFileExecutor;            
         }
 
         [HttpGet]
@@ -42,7 +45,7 @@ namespace WebApiWithPipeLine.Controllers
                 }
                 else if (inModel != null)
                 {
-                    AddInfoToFileExecutorService.Execute(inModel);
+                    _addInfoToFileExecutor.Execute(inModel);                    
                 }
                     
             }

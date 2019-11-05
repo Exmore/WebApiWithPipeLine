@@ -1,39 +1,22 @@
-﻿using PipeLine.Domain.Models.AddInfoToFile;
-using PipeLine.Interfaces;
-using System.Threading.Tasks;
-using System;
-using PipeLine.Domain.Builder;
+﻿using PipeLine.Interfaces;
 using PipeLine.Models.AddInfoToFileModels;
+using PipeLine.Domain.Abstract;
 
 namespace PipeLine.Domain.Executors
 {
-    //TODO: можно просто удалить
-    public class AddInfoToFileExecutor : IStepsExecutor<AddInfoToFileInModel>
+    public class AddInfoToFileExecutor : IAddInfoToFileExecutor<AddInfoToFileInModel>
     {
-        private readonly IPipeLine<AddInfoToFileInModel, ThirdStepResult> _pipeline;
 
-        public AddInfoToFileExecutor()
+        private readonly IAddInfoToFileBuilder _builder;
+        public AddInfoToFileExecutor(IAddInfoToFileBuilder builder)
         {
-            var stepsBuilder = new AddInfoToFileBuilder();
-            _pipeline = stepsBuilder.Build();
+            _builder = builder;
         }
 
-        public async void Execute(AddInfoToFileInModel inModel)
+
+        public void Execute(AddInfoToFileInModel inModel)
         {
-            var task = new Task(() =>
-            {
-                try
-                {
-                    _pipeline.Execute(inModel);
-                }
-                catch (Exception e)
-                {
-                }
-            });
-
-            task.Start();
-
-            await task;
+            AddInfoToFileExecutorService.Execute(_builder, inModel);
         }
-    }
+    }    
 }

@@ -1,5 +1,7 @@
-﻿using PipeLine.Domain.Abstract;
+﻿using Microsoft.Extensions.Options;
+using PipeLine.Domain.Abstract;
 using PipeLine.Domain.Models.AddInfoToFile;
+using PipeLine.Domain.Options;
 using PipeLine.Models.AddInfoToFileModels;
 using System;
 using System.IO;
@@ -9,19 +11,19 @@ namespace PipeLine.Domain.Steps.AddInfoToFile
 {
     public class FirstStep : IStep<AddInfoToFileInModel, FirstStepResult>
     {
-        private readonly string _filePath;
+        private readonly AddInfoToFileOptions _options;
 
-        public FirstStep(string filePath)
+        public FirstStep(AddInfoToFileOptions options)
         {
-            _filePath = filePath;
+            _options = options;
         }
 
         public FirstStepResult Execute(AddInfoToFileInModel firstStepInModel)
         {
             //Main Action            
-            File.AppendAllText(_filePath, $"First Step Start of the {firstStepInModel} at {DateTime.Now.ToString("dd.MM.yyyy hh:mm:ss")}\n");
+            File.AppendAllText(_options.FilePath, $"First Step Start of the {firstStepInModel} at {DateTime.Now.ToString("dd.MM.yyyy hh:mm:ss")}\n");
             Thread.Sleep(firstStepInModel.DelayTime * 1000);
-            File.AppendAllText(_filePath, $"First Step of the {firstStepInModel} has been done at {DateTime.Now.ToString("dd.MM.yyyy hh:mm:ss")}\n");
+            File.AppendAllText(_options.FilePath, $"First Step of the {firstStepInModel} has been done at {DateTime.Now.ToString("dd.MM.yyyy hh:mm:ss")}\n");
 
             return new FirstStepResult(new FirstStepOutModel
             {
