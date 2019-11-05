@@ -1,15 +1,16 @@
-﻿using System;
+﻿using PipeLine.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 
-namespace PipeLine.Domain.PipeLine
+namespace PipeLine.StandardPipeLine
 {
-    public class TPLPipelineWithAwaitAttempt<TIn, TOut>
+    public class StandardPipeLine<TIn, TOut>: IPipeLine<TIn, TOut>
     {
         private readonly List<IDataflowBlock> _transformBlocks = new List<IDataflowBlock>();
-        public TPLPipelineWithAwaitAttempt<TIn, TOut> AddStep<TLocalIn, TLocalOut>(Func<TLocalIn, TLocalOut> stepFunc)
+        public StandardPipeLine<TIn, TOut> AddStep<TLocalIn, TLocalOut>(Func<TLocalIn, TLocalOut> stepFunc)
         {
             var step = new TransformBlock<TC<TLocalIn, TOut>, TC<TLocalOut, TOut>>((tc) =>
             {
@@ -37,7 +38,7 @@ namespace PipeLine.Domain.PipeLine
             return this;
         }
 
-        public TPLPipelineWithAwaitAttempt<TIn, TOut> CreatePipeline()
+        public StandardPipeLine<TIn, TOut> CreatePipeline()
         {
             var setResultStep =
                 new ActionBlock<TC<TOut, TOut>>((tc) => tc.TaskCompletionSource.SetResult(tc.Input));

@@ -10,8 +10,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PipeLine.Interfaces\PipeLine.Interfaces.csproj" />
-    <ProjectReference Include="..\PipeLine.Models\PipeLine.Models.csproj" />
-    <ProjectReference Include="..\PipeLine.StandardPipeLine\PipeLine.StandardPipeLine.csproj" />
   </ItemGroup>
 
 </Project>

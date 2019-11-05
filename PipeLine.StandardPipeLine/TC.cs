@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace PipeLine.Domain.PipeLine
+namespace PipeLine.StandardPipeLine
 {
     public class TC<TInput, TOutput>
     {

@@ -1,13 +1,13 @@
 ﻿using PipeLine.Domain.Builder;
 using PipeLine.Domain.Models.AddInfoToFile;
-using PipeLine.Domain.PipeLine;
+using PipeLine.Interfaces;
 using PipeLine.Models.AddInfoToFileModels;
 
 namespace PipeLine.Domain
 {
     public static class AddInfoToFileExecutorService
     {
-        private static readonly TPLPipelineWithAwaitAttempt<AddInfoToFileInModel, ThirdStepResult> _pipeline;
+        private static readonly IPipeLine<AddInfoToFileInModel, ThirdStepResult> _pipeline;
         
         static AddInfoToFileExecutorService()
         {

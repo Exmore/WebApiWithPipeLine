@@ -1,9 +1,10 @@
 ﻿using PipeLine.Domain.Abstract;
 using PipeLine.Domain.Adapters.AddInfoToFile;
 using PipeLine.Domain.Models.AddInfoToFile;
-using PipeLine.Domain.PipeLine;
 using PipeLine.Domain.Steps.AddInfoToFile;
+using PipeLine.Interfaces;
 using PipeLine.Models.AddInfoToFileModels;
+using PipeLine.StandardPipeLine;
 
 namespace PipeLine.Domain.Builder
 {
@@ -15,7 +16,8 @@ namespace PipeLine.Domain.Builder
             _filePath = "Information.txt";
         }
 
-        public TPLPipelineWithAwaitAttempt<AddInfoToFileInModel, ThirdStepResult> Build()
+        //TODO вынести в DI
+        public IPipeLine<AddInfoToFileInModel, ThirdStepResult> Build()
         {
             var firstStep = new FirstStep(_filePath);
             var adapter = new FirstStepAdapter();
@@ -23,7 +25,7 @@ namespace PipeLine.Domain.Builder
             var adapter2 = new SecondStepAdapter();
             var thirdStep = new ThirdStep(_filePath);
 
-            var pipeline = new TPLPipelineWithAwaitAttempt<AddInfoToFileInModel, ThirdStepResult>()
+            var pipeline = new StandardPipeLine<AddInfoToFileInModel, ThirdStepResult>()
                     .AddStep<AddInfoToFileInModel, FirstStepResult>(model => firstStep.Execute(model))
                     .AddStep<FirstStepResult, SecondStepInModel>(model => adapter.Execute(model))
                     .AddStep<SecondStepInModel, SecondStepResult>(model => secondStep.Execute(model))

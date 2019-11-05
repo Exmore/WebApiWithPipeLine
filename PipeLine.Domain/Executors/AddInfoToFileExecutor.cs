@@ -1,5 +1,4 @@
 ﻿using PipeLine.Domain.Models.AddInfoToFile;
-using PipeLine.Domain.PipeLine;
 using PipeLine.Interfaces;
 using System.Threading.Tasks;
 using System;
@@ -8,9 +7,10 @@ using PipeLine.Models.AddInfoToFileModels;
 
 namespace PipeLine.Domain.Executors
 {
+    //TODO: можно просто удалить
     public class AddInfoToFileExecutor : IStepsExecutor<AddInfoToFileInModel>
     {
-        private readonly TPLPipelineWithAwaitAttempt<AddInfoToFileInModel, ThirdStepResult> _pipeline;
+        private readonly IPipeLine<AddInfoToFileInModel, ThirdStepResult> _pipeline;
 
         public AddInfoToFileExecutor()
         {
