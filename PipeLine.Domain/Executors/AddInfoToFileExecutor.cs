@@ -1,22 +1,21 @@
-﻿using PipeLine.Interfaces;
-using PipeLine.Models.AddInfoToFileModels;
-using PipeLine.Domain.Abstract;
+﻿using PipeLine.AddInfoToFile.Interfaces;
+using PipeLine.AddInfoToFile.Models;
+using PipeLine.Interfaces;
 
 namespace PipeLine.Domain.Executors
 {
     public class AddInfoToFileExecutor : IAddInfoToFileExecutor<AddInfoToFileInModel>
     {
+        private readonly IPipeLine<AddInfoToFileInModel, AddInfoToFileResult> _pipeline;
 
-        private readonly IAddInfoToFileBuilder _builder;
-        public AddInfoToFileExecutor(IAddInfoToFileBuilder builder)
+        public AddInfoToFileExecutor(IAddInfoToFileBuilder<AddInfoToFileInModel, AddInfoToFileResult> builder)
         {
-            _builder = builder;
+            _pipeline = builder.Build();
         }
-
 
         public void Execute(AddInfoToFileInModel inModel)
         {
-            AddInfoToFileExecutorService.Execute(_builder, inModel);
+            _pipeline.Execute(inModel);
         }
-    }    
+    }
 }

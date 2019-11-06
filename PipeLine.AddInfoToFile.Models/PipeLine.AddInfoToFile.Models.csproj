@@ -5,14 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\PipeLine.AddInfoToFile.Adapters\PipeLine.AddInfoToFile.Adapters.csproj" />
     <ProjectReference Include="..\PipeLine.AddInfoToFile.Interfaces\PipeLine.AddInfoToFile.Interfaces.csproj" />
-    <ProjectReference Include="..\PipeLine.AddInfoToFile.Models\PipeLine.AddInfoToFile.Models.csproj" />
-    <ProjectReference Include="..\PipeLine.AddInfoToFile.Steps\PipeLine.AddInfoToFile.Steps.csproj" />
     <ProjectReference Include="..\PipeLine.Interfaces\PipeLine.Interfaces.csproj" />
     <ProjectReference Include="..\PipeLine.Models\PipeLine.Models.csproj" />
   </ItemGroup>

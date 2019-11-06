@@ -19,7 +19,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\t\"SomeString\":\"SomeString1\",\r\n\t\"DelayTime\": 40\r\n}"
+					"raw": "{\r\n\t\"InputString\":\"asdas wqrasf wrwrsaf wr\",\r\n\t\"SenderName\":\"Ne Alesha\"\r\n}"
 				},
 				"url": {
 					"raw": "https://localhost:44329/PipeLineExample",

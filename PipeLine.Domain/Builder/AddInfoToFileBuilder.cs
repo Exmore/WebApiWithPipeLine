@@ -1,45 +1,47 @@
-﻿using Microsoft.Extensions.Options;
-using PipeLine.Domain.Abstract;
-using PipeLine.Domain.Adapters.AddInfoToFile;
-using PipeLine.Domain.Models.AddInfoToFile;
-using PipeLine.Domain.Options;
-using PipeLine.Domain.Steps.AddInfoToFile;
+﻿using PipeLine.AddInfoToFile.Adapters;
+using PipeLine.AddInfoToFile.Interfaces;
+using PipeLine.AddInfoToFile.Models;
 using PipeLine.Interfaces;
-using PipeLine.Models.AddInfoToFileModels;
 
 namespace PipeLine.Domain.Builder
 {
-    public class AddInfoToFileBuilder: IAddInfoToFileBuilder
+    /// <summary>
+    /// Добавляет информацию в файл. Состоит из 2 шагов и 2 адаптеров.
+    /// </summary>
+    public class AddInfoToFileBuilder: IAddInfoToFileBuilder<AddInfoToFileInModel, AddInfoToFileResult>
     {
-        private readonly AddInfoToFileOptions _options;
-
-        //TODO mb need to fix
         private readonly IPipeLine<AddInfoToFileInModel, AddInfoToFileResult> _pipeLine;
 
+        private readonly IStepsAdapter<AddInfoToFileInModel, SeparateWordsInModel> _firstStepAdapter;
+        private readonly IStep<SeparateWordsInModel, SeparateWordsResult> _separateWords;
+        private readonly IStepsAdapter<SeparateWordsResult, SaveWordsToFileInModel> _removeBadWordsToSaveWordsToFileAdapter;
+        private readonly IStep<SaveWordsToFileInModel, SaveWordsToFileResult> _saveWordsToFile;
+
         public AddInfoToFileBuilder(
-            IOptions<AddInfoToFileOptions> options, 
-            IPipeLine<AddInfoToFileInModel, AddInfoToFileResult> pipeLine)
+            IPipeLine<AddInfoToFileInModel, AddInfoToFileResult> pipeLine,
+            IStepsAdapter<AddInfoToFileInModel, SeparateWordsInModel> firstStepAdapter,
+            IStep<SeparateWordsInModel, SeparateWordsResult> separateWords,
+            IStepsAdapter<SeparateWordsResult, SaveWordsToFileInModel> removeBadWordsToSaveWordsToFileAdapter,
+            IStep<SaveWordsToFileInModel, SaveWordsToFileResult> saveWordsToFile)
         {
-            _options = options.Value;
             _pipeLine = pipeLine;
+            _firstStepAdapter = firstStepAdapter;
+            _separateWords = separateWords;
+            _removeBadWordsToSaveWordsToFileAdapter = removeBadWordsToSaveWordsToFileAdapter;
+            _saveWordsToFile = saveWordsToFile;
         }
 
-        //TODO вынести в DI
         public IPipeLine<AddInfoToFileInModel, AddInfoToFileResult> Build()
-        {
-            var firstStep = new FirstStep(_options);
-            var adapter = new FirstStepAdapter();
-            var secondStep = new SecondStep(_options);
-            var adapter2 = new SecondStepAdapter();
-            var thirdStep = new ThirdStep(_options);
+        {                        
+            var saveWordsResultToAddInfoToFileResultAdapter = new SaveWordsResultToAddInfoToFileResultAdapter();
 
             _pipeLine
-            .AddStep<AddInfoToFileInModel, FirstStepResult>(model => firstStep.Execute(model))
-            .AddStep<FirstStepResult, SecondStepInModel>(model => adapter.Execute(model))
-            .AddStep<SecondStepInModel, SecondStepResult>(model => secondStep.Execute(model))
-            .AddStep<SecondStepResult, ThirdStepInModel>(model => adapter2.Execute(model))
-            .AddStep<ThirdStepInModel, AddInfoToFileResult>(model => thirdStep.Execute(model))
-            .CreatePipeline();
+                .AddStep<AddInfoToFileInModel, SeparateWordsInModel>(model => _firstStepAdapter.Execute(model))
+                .AddStep<SeparateWordsInModel, SeparateWordsResult>(model=> _separateWords.Execute(model))
+                .AddStep<SeparateWordsResult, SaveWordsToFileInModel>(model=> _removeBadWordsToSaveWordsToFileAdapter.Execute(model))
+                .AddStep<SaveWordsToFileInModel, SaveWordsToFileResult>(model=> _saveWordsToFile.Execute(model))
+                .AddStep<SaveWordsToFileResult, AddInfoToFileResult>(model=>saveWordsResultToAddInfoToFileResultAdapter.Execute(model))                
+                .CreatePipeline();
 
             return _pipeLine;
         }

@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PipeLine.Domain.Abstract;
+using PipeLine.AddInfoToFile.Adapters;
+using PipeLine.AddInfoToFile.Interfaces;
+using PipeLine.AddInfoToFile.Models;
+using PipeLine.AddInfoToFile.Steps;
+using PipeLine.AddInfoToFile.Steps.Options;
 using PipeLine.Domain.Builder;
 using PipeLine.Domain.Executors;
-using PipeLine.Domain.Options;
 using PipeLine.Interfaces;
-using PipeLine.Models.AddInfoToFileModels;
 using PipeLine.StandardPipeLine;
 
 namespace WebApiWithPipeLine
@@ -26,20 +28,70 @@ namespace WebApiWithPipeLine
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            ConfigureAllRelatedToPipeLine(services);
+        }
 
+        // TODO наверное лучше разбить эти конфигурации и часть делать именно в AddInfoToFile стартапе
+        private void ConfigureAllRelatedToPipeLine(IServiceCollection services)
+        {
+            ConfigurePipeLine(services);
+            ConfigureAddInfoFileExecutor(services);
+            ConfigureStepsBuilder(services);
+            ConfigureSteps(services);
+        }
 
-            var options = new AddInfoToFileOptions();
-            Configuration.GetSection(nameof(AddInfoToFileOptions)).Bind(options);
-            services.AddOptions<AddInfoToFileOptions>().Configure(x => { x.FilePath = options.FilePath; });
-
-            // Бинд исполнителя для AddInfoFile
+        private void ConfigureAddInfoFileExecutor(IServiceCollection services)
+        {
             services.AddSingleton<IAddInfoToFileExecutor<AddInfoToFileInModel>, AddInfoToFileExecutor>();
+        }
 
-            // Бинд билдера шагов
-            services.AddSingleton<IAddInfoToFileBuilder, AddInfoToFileBuilder>();
+        /// <summary>
+        /// Бинд реализации пайп лайна
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigurePipeLine(IServiceCollection services)
+        {            
+            services.AddSingleton<IPipeLine<AddInfoToFileInModel, AddInfoToFileResult>, StandardPipeLine<AddInfoToFileInModel, AddInfoToFileResult>>();
+        }
 
-            // Бинд реализации пайп лайна
-            services.AddSingleton<IPipeLine<AddInfoToFileInModel, AddInfoToFileResult>, StandardPipeLine<AddInfoToFileInModel, AddInfoToFileResult>>();            
+        /// <summary>
+        /// Бинд билдера шагов
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureStepsBuilder(IServiceCollection services)
+        {
+            services.AddSingleton<IAddInfoToFileBuilder<AddInfoToFileInModel, AddInfoToFileResult>, AddInfoToFileBuilder>();            
+        }
+
+        /// <summary>
+        /// Бинд самих шагов
+        /// </summary>
+        /// <param name="services"></param>
+        private void ConfigureSteps(IServiceCollection services)
+        {
+            // Нужны т.к. будут использоваться вэтих шагах
+            AddSaveWordsToFileOptions(services);
+            AddSeparateWordsOptions(services);
+
+            services.AddSingleton<IStepsAdapter<AddInfoToFileInModel, SeparateWordsInModel>, StartInfoToSeparateWordsAdapter>();
+            services.AddSingleton<IStep<SeparateWordsInModel, SeparateWordsResult>, SeparateWords>();
+            services.AddSingleton<IStepsAdapter<SeparateWordsResult, SaveWordsToFileInModel>, SaveGoodWordsToFileAdapter>();
+            services.AddSingleton<IStep<SaveWordsToFileInModel, SaveWordsToFileResult>, SaveWordsToFile>();
+            services.AddSingleton<IStepsAdapter<SaveWordsToFileResult, AddInfoToFileResult>, SaveWordsResultToAddInfoToFileResultAdapter>();
+        }
+
+        public void AddSaveWordsToFileOptions(IServiceCollection services)
+        {
+            var saveWordsToFileOptions = new SaveWordsToFileOptions();
+            Configuration.GetSection(nameof(SaveWordsToFileOptions)).Bind(saveWordsToFileOptions);
+            services.AddOptions<SaveWordsToFileOptions>().Configure(x => { x.FilePath = saveWordsToFileOptions.FilePath; x.DelayTime = saveWordsToFileOptions.DelayTime; });
+        }
+
+        public void AddSeparateWordsOptions(IServiceCollection services)
+        {
+            var separateWordsOptions = new SeparateWordsOptions();
+            Configuration.GetSection(nameof(SeparateWordsOptions)).Bind(separateWordsOptions);
+            services.AddOptions<SeparateWordsOptions>().Configure(x => { x.DelayTime = separateWordsOptions.DelayTime; x.BadWords = separateWordsOptions.BadWords; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,3 +115,4 @@ namespace WebApiWithPipeLine
         }
     }
 }
+

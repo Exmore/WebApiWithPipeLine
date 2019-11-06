@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PipeLine.AddInfoToFile.Models;
 using PipeLine.Interfaces;
-using PipeLine.Models.AddInfoToFileModels;
 using PipeLine.WebApiModels;
 
 
