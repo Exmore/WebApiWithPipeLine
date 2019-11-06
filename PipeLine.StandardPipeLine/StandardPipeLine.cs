@@ -10,7 +10,8 @@ namespace PipeLine.StandardPipeLine
     public class StandardPipeLine<TIn, TOut>: IPipeLine<TIn, TOut>
     {
         private readonly List<IDataflowBlock> _transformBlocks = new List<IDataflowBlock>();
-        public StandardPipeLine<TIn, TOut> AddStep<TLocalIn, TLocalOut>(Func<TLocalIn, TLocalOut> stepFunc)
+
+        public IPipeLine<TIn, TOut> AddStep<TLocalIn, TLocalOut>(Func<TLocalIn, TLocalOut> stepFunc)
         {
             var step = new TransformBlock<TC<TLocalIn, TOut>, TC<TLocalOut, TOut>>((tc) =>
             {
@@ -38,7 +39,7 @@ namespace PipeLine.StandardPipeLine
             return this;
         }
 
-        public StandardPipeLine<TIn, TOut> CreatePipeline()
+        public IPipeLine<TIn, TOut> CreatePipeline()
         {
             var setResultStep =
                 new ActionBlock<TC<TOut, TOut>>((tc) => tc.TaskCompletionSource.SetResult(tc.Input));

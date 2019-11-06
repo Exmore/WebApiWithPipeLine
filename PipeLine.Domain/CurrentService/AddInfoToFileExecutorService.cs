@@ -8,7 +8,7 @@ namespace PipeLine.Domain
 {
     public static class AddInfoToFileExecutorService
     {
-        private static IPipeLine<AddInfoToFileInModel, ThirdStepResult> _pipeline;       
+        private static IPipeLine<AddInfoToFileInModel, AddInfoToFileResult> _pipeline;       
 
         public static void Execute(IAddInfoToFileBuilder builder, AddInfoToFileInModel inModel)
         {

@@ -9,6 +9,7 @@ using PipeLine.Domain.Executors;
 using PipeLine.Domain.Options;
 using PipeLine.Interfaces;
 using PipeLine.Models.AddInfoToFileModels;
+using PipeLine.StandardPipeLine;
 
 namespace WebApiWithPipeLine
 {
@@ -31,9 +32,14 @@ namespace WebApiWithPipeLine
             Configuration.GetSection(nameof(AddInfoToFileOptions)).Bind(options);
             services.AddOptions<AddInfoToFileOptions>().Configure(x => { x.FilePath = options.FilePath; });
 
-
+            // Бинд исполнителя для AddInfoFile
             services.AddSingleton<IAddInfoToFileExecutor<AddInfoToFileInModel>, AddInfoToFileExecutor>();
+
+            // Бинд билдера шагов
             services.AddSingleton<IAddInfoToFileBuilder, AddInfoToFileBuilder>();
+
+            // Бинд реализации пайп лайна
+            services.AddSingleton<IPipeLine<AddInfoToFileInModel, AddInfoToFileResult>, StandardPipeLine<AddInfoToFileInModel, AddInfoToFileResult>>();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

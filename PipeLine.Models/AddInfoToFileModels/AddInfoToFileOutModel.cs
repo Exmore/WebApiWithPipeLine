@@ -1,6 +1,6 @@
-﻿namespace PipeLine.Domain.Models.AddInfoToFile
+﻿namespace PipeLine.Models.AddInfoToFileModels
 {
-    public class ThirdStepOutModel
+    public class AddInfoToFileOutModel 
     {
         public string SomeString { get; set; }
         public int DelayTime { get; set; }

@@ -2,18 +2,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace PipeLine.Domain.Models.AddInfoToFile
+namespace PipeLine.Models.AddInfoToFileModels
 {
-    public class ThirdStepResult : IResultContainer<ThirdStepOutModel>
+    public class AddInfoToFileResult : IResultContainer<AddInfoToFileOutModel>
     {
         private readonly List<ApplicationException> _appErrors;
 
-        public ThirdStepResult(ThirdStepOutModel result)
+        public AddInfoToFileResult(AddInfoToFileOutModel result)
         {
             _appErrors = new List<ApplicationException>();
             Value = result;
         }
-        public ThirdStepOutModel Value { get; }
+        public AddInfoToFileOutModel Value { get; }
 
         public bool HasErrors => _appErrors.Count > 0;
 

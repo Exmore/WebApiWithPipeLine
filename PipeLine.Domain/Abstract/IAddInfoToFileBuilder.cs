@@ -6,6 +6,6 @@ namespace PipeLine.Domain.Abstract
 {
     public interface IAddInfoToFileBuilder
     {
-        IPipeLine<AddInfoToFileInModel, ThirdStepResult> Build();
+        IPipeLine<AddInfoToFileInModel, AddInfoToFileResult> Build();
     }
 }

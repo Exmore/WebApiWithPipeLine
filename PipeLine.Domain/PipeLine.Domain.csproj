@@ -6,13 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0" />
-    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.10.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PipeLine.Interfaces\PipeLine.Interfaces.csproj" />
     <ProjectReference Include="..\PipeLine.Models\PipeLine.Models.csproj" />
-    <ProjectReference Include="..\PipeLine.StandardPipeLine\PipeLine.StandardPipeLine.csproj" />
   </ItemGroup>
 
 </Project>
