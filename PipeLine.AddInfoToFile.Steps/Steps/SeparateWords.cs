@@ -4,6 +4,7 @@ using PipeLine.AddInfoToFile.Models;
 using PipeLine.AddInfoToFile.Steps.Options;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace PipeLine.AddInfoToFile.Steps
@@ -20,7 +21,7 @@ namespace PipeLine.AddInfoToFile.Steps
         public SeparateWordsResult Execute(SeparateWordsInModel inModel)
         {
             // Имитация долгой работы
-            Thread.Sleep(_options.DelayTime * 1000);
+            Thread.Sleep(_options.DelayTime * 1000);                            
 
             var parsedArray = SeparateString(inModel.InputString);
             var badWords = GetBadWords(parsedArray);
@@ -45,10 +46,10 @@ namespace PipeLine.AddInfoToFile.Steps
             return words.Except(foundedBadWordsList).ToList();
         }
 
-        //TODO заменить на норм RegEx
+        
         private string[] SeparateString(string inputString)
         {
-            return inputString.Split(' ');
+            return Regex.Matches(inputString, @""".*?""|[^\s]+").Cast<Match>().Select(m => m.Value).ToArray();
         }
     }
 }
