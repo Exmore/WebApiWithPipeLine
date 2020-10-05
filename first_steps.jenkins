@@ -11,12 +11,9 @@ pipeline {
         timestamps()
     }
     stages {
-        stage("First step") {
-            steps {                
-            }
-        }
-        stage("Second step") {
-            steps {                
+        stage("Build") {
+            steps { 
+                sh 'make'
             }
         }
     }
