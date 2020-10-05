@@ -6,4 +6,5 @@ namespace PipeLine.AddInfoToFile.Interfaces
     {
         IPipeLine<TIn, TOut> Build();
     }
+    asds
 }
