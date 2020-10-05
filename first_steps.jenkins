@@ -10,16 +10,4 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
     }
-    stages {
-        stage("First step") {
-            steps {
-                'hostname'
-            }
-        }
-        stage("Second step") {
-            steps {
-                'uptime'
-            }
-        }
-    }
 }
