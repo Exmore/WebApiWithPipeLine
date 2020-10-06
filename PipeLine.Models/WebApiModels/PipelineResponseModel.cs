@@ -4,5 +4,6 @@
     {
         public string Result { get; set; }
         public string AddInfo { get; set; }
+        sdgsdg
     }
 }
